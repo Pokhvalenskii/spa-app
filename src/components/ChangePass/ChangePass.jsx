@@ -1,23 +1,36 @@
 import './ChangePass.css'
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom'
-import { useUserInfo } from '../../hooks/useUserInfo';
-import { useState } from 'react';
+import { useUserInfo, useFormChangePassInfo } from '../../hooks/hooks';
+import { useEffect, useState } from 'react';
 const ChangePass = (props) => {
 
-  const { loggedIn, email } = useUserInfo();
-
+  const { loggedIn } = useUserInfo();
+  const { oldPassword, password, repeatPassword } = useFormChangePassInfo();
   const [isValid, setIsValid] = useState(true)
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: {
       errors
     }
   } = useForm({
     mode: 'onChange'
   });
+
+  useEffect(() => {
+    props.setOldPasswordChangePassword(watch('oldPassword'))
+  },[watch('oldPassword')])
+
+  useEffect(() => {
+    props.setPasswordChangePassword(watch('password'))
+  },[watch('password')])
+
+  useEffect(() => {
+    props.setRepeatPasswordChangePassword(watch('repeatPassword'))
+  },[watch('repeatPassword')])
 
   const onSubmit = (data) => {
     if(data.password === data.repeatPassword) {
@@ -39,6 +52,7 @@ const ChangePass = (props) => {
         <label className='form__label'>
           Old password
           <input
+            value={oldPassword || ''}
             type='password'
             className='form__input'
             {...register('oldPassword')}
@@ -48,6 +62,7 @@ const ChangePass = (props) => {
         <label className='form__label'>
           Password
           <input
+            value={password || ''}
             className='form__input'
             type='password'
             placeholder='new password'
@@ -72,6 +87,7 @@ const ChangePass = (props) => {
         <label className='form__label'>
           Repeat password
           <input
+            value={repeatPassword || ''}
             className='form__input'
             type='password'
             placeholder='repeat password'

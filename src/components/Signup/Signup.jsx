@@ -1,23 +1,36 @@
 import './Signup.css'
 import { useForm } from 'react-hook-form';
 import { Link, Navigate } from 'react-router-dom'
-import { useState } from 'react';
-import { useUserInfo } from '../../hooks/useUserInfo';
+import { useEffect, useState } from 'react';
+import { useUserInfo, useFormSignUpInfo } from '../../hooks/hooks';
 
 const Signup = (props) => {
 
-  const { loggedIn, email } = useUserInfo();
-
+  const { loggedIn } = useUserInfo();
+  const { email, password, repeatPassword } = useFormSignUpInfo();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: {
       errors
     }
   } = useForm({
     mode: 'onChange'
   });
+
+  useEffect(() => {
+    props.setEmailStateSignUp(watch('email'));
+  }, [watch('email')])
+
+  useEffect(() => {
+    props.setPasswordStateSignUp(watch('password'));
+  },[watch('password')])
+
+  useEffect(() => {
+    props.setRepeatPasswordStateSignUp(watch('repeatPassword'))
+  },[watch('repeatPassword')])
 
   const [isValid, setIsValid] = useState(true)
 
@@ -31,9 +44,7 @@ const Signup = (props) => {
       setIsValid(false);
     }
   }
-
-
-
+  
   return !loggedIn ? (
     <div className='signup'>
       <form
@@ -44,6 +55,7 @@ const Signup = (props) => {
       <label className='form__label'>
         Email
         <input
+          value={email || ''}
           className='form__input'
           {...register('email', {
             required: 'Please enter your email'
@@ -56,6 +68,7 @@ const Signup = (props) => {
       <label className='form__label'>
         Password
         <input
+          value={password || ''}
           className='form__input'
           type='password'
           placeholder='enter password'
@@ -80,6 +93,7 @@ const Signup = (props) => {
       <label className='form__label'>
         Repeat password
         <input
+          value={repeatPassword || ''}
           className='form__input'
           type='password'
           placeholder='enter password'

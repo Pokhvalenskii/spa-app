@@ -1,15 +1,18 @@
 import './Signin.css'
 import { useForm } from 'react-hook-form';
 import { Link, Navigate } from 'react-router-dom'
-import { useUserInfo } from '../../hooks/useUserInfo';
+import { useUserInfo, useFormLoginInfo } from '../../hooks/hooks';
+import { useEffect } from 'react';
 
 const Signin = (props) => {
 
-  const { loggedIn, email } = useUserInfo();
+  const { loggedIn } = useUserInfo();
+  const { email, password} = useFormLoginInfo();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: {
       errors
     }
@@ -17,10 +20,16 @@ const Signin = (props) => {
     mode: 'onChange'
   });
 
+  useEffect(() => {
+    props.registerFormStatePass(watch('password'))
+    props.registerFormStateEmail(watch('email'));
+  }, [watch('password'), watch('email')])
+
   const onSubmit = (data) => {
     props.signin(data);
     alert('success');
   }
+
   return !loggedIn ? (
     <div className='signin'>
       <form
@@ -31,8 +40,12 @@ const Signin = (props) => {
       <label className='form__label'>
         Email
         <input
+          value={email || ''}
           className='form__input'
-          {...register('email')}
+          {...register('email', {
+            required: 'Please enter your email',
+          })}
+
           placeholder='enter email'
           type='email'
         />
@@ -44,6 +57,7 @@ const Signin = (props) => {
           className='form__input'
           type='password'
           placeholder='enter password'
+          value={password || ''}
           {...register('password', {
             required: 'Please enter your password',
             minLength: {
@@ -57,7 +71,7 @@ const Signin = (props) => {
             pattern: {
               value: /(?=.*[A-Z])/,
               message: 'The password must contain between 4 and 10 characters and one capital letter.'
-            }
+            },
           })}
         />
         {errors?.password && <p className='error'>{errors.password.message}</p>}
