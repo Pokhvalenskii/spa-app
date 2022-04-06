@@ -13,6 +13,7 @@ const Signin = (props) => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: {
       errors
     }
@@ -21,13 +22,19 @@ const Signin = (props) => {
   });
 
   useEffect(() => {
-    props.registerFormStatePass(watch('password'))
-    props.registerFormStateEmail(watch('email'));
-  }, [watch('password'), watch('email')])
+    props.setPasswordStateSignInForm(watch('password'))
+  }, [watch('password')])
+
+  useEffect(() => {
+    props.setEmailStateSignInForm(watch('email'))
+  }, [watch('email')])
 
   const onSubmit = (data) => {
     props.signin(data);
-    alert('success');
+    reset({
+      email: '',
+      password: ''
+    })
   }
 
   return !loggedIn ? (

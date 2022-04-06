@@ -13,6 +13,7 @@ const ChangePass = (props) => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: {
       errors
     }
@@ -34,8 +35,13 @@ const ChangePass = (props) => {
 
   const onSubmit = (data) => {
     if(data.password === data.repeatPassword) {
-      alert('password changed');
+      props.changePassword(data)
       setIsValid(true);
+      reset({
+        oldPassword: '',
+        password: '',
+        repeatPassword: ''
+      })
     } else {
       setIsValid(false);
     }

@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 export function useUserInfo() {
-  const {email, placeEmail} = useSelector(state => state.user);
+  const {email, status} = useSelector(state => state.user);
 
   return {
     loggedIn: !!email,
     email,
-    placeEmail
+    status
   }
 }
 

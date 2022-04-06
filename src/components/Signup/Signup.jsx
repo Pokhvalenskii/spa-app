@@ -6,13 +6,14 @@ import { useUserInfo, useFormSignUpInfo } from '../../hooks/hooks';
 
 const Signup = (props) => {
 
-  const { loggedIn } = useUserInfo();
+  const { loggedIn, status } = useUserInfo();
   const { email, password, repeatPassword } = useFormSignUpInfo();
-
+  console.log('status', status)
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: {
       errors
     }
@@ -38,13 +39,17 @@ const Signup = (props) => {
     if(data.password === data.repeatPassword) {
       props.signup(data);
       setIsValid(true)
-      alert('success');
+      reset({
+        email: '',
+        password: '',
+        repeatPassword: ''
+      })
     }
     else {
       setIsValid(false);
     }
   }
-  
+
   return !loggedIn ? (
     <div className='signup'>
       <form

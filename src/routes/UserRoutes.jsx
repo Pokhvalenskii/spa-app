@@ -1,7 +1,16 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import {useDispatch} from 'react-redux';
-import { addUser, removeUser, register } from '../store/slices/userSlice';
-import { addEmail, addPassword } from '../store/slices/loginFormSlice';
+import {
+  reg,
+  logout,
+  login,
+  setNewPassword
+} from '../store/slices/userSlice';
+
+import {
+  addEmail,
+  addPassword
+} from '../store/slices/loginFormSlice';
 
 import {
   setEmailStateSignUpForm,
@@ -20,40 +29,39 @@ import Signup from '../components/Signup/Signup';
 import ChangePass from '../components/ChangePass/ChangePass';
 import Error404 from '../components/Error404/Error404';
 
+
 const UserRoutes = () => {
 
+
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const signin = (data) => {
-    console.log('signIN', data)
-    dispatch(addUser({
-      email: data.email
-    }))
-    navigate('/');
+    dispatch(login(data))
   }
-
   const signup = (data) => {
-    console.log('signUP')
-    dispatch(addUser({
-      email: data.email
-    }))
-    navigate('/');
+    dispatch(reg(data));
+  }
+  const logOut = () => {
+    dispatch(logout())
   }
 
-  const registerFormStateEmail = (data) => {
+  const changePassword = (data) => {
+    dispatch(setNewPassword(data))
+  }
+
+  const setEmailStateSignInForm = (data) => {
+    console.log('formLogin1')
     dispatch(addEmail({
       email: data
     }))
   }
 
-  const registerFormStatePass = (data) => {
+  const setPasswordStateSignInForm = (data) => {
+    console.log('formLogin2')
     dispatch(addPassword({
       password: data
     }))
-  }
-
-  const logOut = () => {
-    dispatch(removeUser())
   }
 
   const setEmailStateSignUp = (data) => {
@@ -96,8 +104,8 @@ const UserRoutes = () => {
         path='/signin'
         element={<Signin
           signin={signin}
-          registerFormStateEmail={registerFormStateEmail}
-          registerFormStatePass={registerFormStatePass}
+          setEmailStateSignInForm={setEmailStateSignInForm}
+          setPasswordStateSignInForm={setPasswordStateSignInForm}
         />}
       />
       <Route
@@ -113,6 +121,7 @@ const UserRoutes = () => {
         path='/'
         element={<ChangePass
           logOut={logOut}
+          changePassword={changePassword}
           setOldPasswordChangePassword={setOldPasswordChangePassword}
           setPasswordChangePassword={setPasswordChangePassword}
           setRepeatPasswordChangePassword={setRepeatPasswordChangePassword}
